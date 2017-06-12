@@ -1,0 +1,40 @@
+使用说明
+
+目的：
+    快速创建多页面切换的VC.
+举例需求：
+    我的订单页面，分给三个切换页面，全部、已付款、未付款。
+    简单快速的做法是创建三个子页面，以childVC的方式添加到我的订单主页面里面去。
+使用步骤：
+    1，首先配置默认显示的子页面。
+    以下代码为配置 self.tableView1 为默认显示页面。其中 layout 为 子VC 的布局 block。
+    [self configFirstSubVC:self.tableView1 layout:^(UIViewController *childVC) {
+
+        [childVC.view mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.and.right.with.bottom.equalTo(self.view);
+                make.top.mas_equalTo(self.segCon.mas_bottom).mas_offset(10);
+        }];
+    }];
+    也可不使用，直接给 子VC frame
+    self.tableView1.frame = cgrectMake(0,64,320,320);
+    [self configFirstSubVC:self.tableView1 layout:nil];
+
+    2 触发某些动作时，需要切换 childVC
+
+    [self replaceSubVC:self.tableView1 ];
+
+    - (void)replaceSubVC:(UIViewController*)subVC{
+
+        [self replaceNewController:subVC layout:^(UIViewController *newController) {
+            [self.view addSubview:newController.view ];
+            [newController.view mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.and.right.with.bottom.equalTo(self.view);
+                make.top.mas_equalTo(self.segCon.mas_bottom).mas_offset(10);
+            }];
+        }];
+    }
+    其中layout依然是为子 VC 布局的，也可用 frame 代替、
+    - (void)replaceSubVC:(UIViewController*)subVC{
+        subVC.frame = cgrectMake(0,64,320,320);
+        [self replaceNewController:subVC layout:nil];
+    }
